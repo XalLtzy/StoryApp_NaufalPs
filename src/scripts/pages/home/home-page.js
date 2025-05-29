@@ -14,7 +14,13 @@ export default class HomePage {
   async render() {
     return `
       <main id="main-content" class="home-container" tabindex="-1" role="main">
-        <h1 class="page-title">Berbagi Cerita</h1>
+        <header class="page-header">
+          <button id="savePageBtn" class="save-page-btn" aria-label="Simpan Halaman">
+            💾 Save Page
+          </button>
+          <h1 class="page-title">Berbagi Cerita</h1>
+          <!-- Kalau ada button subs bisa tetap di sini -->
+        </header>
         <div id="map" class="map-container" aria-label="Story locations map" role="region"></div>
         <div id="storyList" class="story-list"></div>
       </main>
@@ -24,6 +30,7 @@ export default class HomePage {
   async afterRender() {
     const storyContainer = document.querySelector('#storyList');
     const mapContainer = document.querySelector('#map');
+    const savePageBtn = document.querySelector('#savePageBtn');
 
     const renderStories = (stories) => {
       if (!stories || stories.length === 0) {
@@ -49,14 +56,14 @@ export default class HomePage {
       }).join('');
       storyContainer.innerHTML = storyHtml;
 
-      // Tambahkan event listener ke tombol simpan favorit
+      // Event listener tombol favorit
       document.querySelectorAll('.save-story-btn').forEach((button) => {
         button.addEventListener('click', async (e) => {
           const id = e.target.dataset.id;
           const story = stories.find((s) => s.id === id);
           if (story) {
             await IdbHelper.putStory(story);
-            alert('Story berhasil disimpan ke Favorit!');
+            alert(`Story "${story.name}" berhasil disimpan ke Favorit!`);
           }
         });
       });
@@ -86,6 +93,12 @@ export default class HomePage {
       const stories = result.listStory;
       renderStories(stories);
       renderMap(stories);
+
+      // Save Page button action contoh sederhana
+      savePageBtn.addEventListener('click', () => {
+        alert('Fungsi Save Page belum diimplementasikan');
+      });
+
     } catch (error) {
       const offlineStories = await IdbHelper.getAllStories();
       storyContainer.innerHTML = `<p>Menampilkan data offline karena terjadi kesalahan: ${error.message}</p>`;
