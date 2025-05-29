@@ -1,4 +1,4 @@
-const BASE_PATH = '/StoryApp_Naufal';
+const BASE_PATH = '/StoryApp_NaufalPs';
 const CACHE_NAME = 'Story-App-cache-v1';
 
 const urlsToCache = [
