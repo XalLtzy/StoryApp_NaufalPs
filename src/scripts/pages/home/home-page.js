@@ -45,7 +45,7 @@ export default class HomePage {
               ${new Date(story.createdAt).toLocaleString()}
             </time>
             <button class="save-story-btn" data-id="${story.id}" aria-label="Tambahkan cerita ${story.name} ke favorit">
-              💾 Tambahkan ke Favorit
+              Tambahkan ke Favorit
             </button>
           </article>
         `;
