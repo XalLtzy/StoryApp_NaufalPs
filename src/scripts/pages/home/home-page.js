@@ -15,6 +15,11 @@ export default class HomePage {
     return `
       <main id="main-content" class="home-container" tabindex="-1" role="main">
         <h1 class="page-title">Berbagi Cerita</h1>
+        <div class="offline-controls">
+          <button id="clearOfflineBtn" class="offline-button danger" aria-label="Hapus semua data offline">
+            🗑️ Hapus Semua Data Offline
+          </button>
+        </div>
         <div id="map" class="map-container" aria-label="Story locations map" role="region"></div>
         <div id="storyList" class="story-list"></div>
       </main>
@@ -24,6 +29,7 @@ export default class HomePage {
   async afterRender() {
     const storyContainer = document.querySelector('#storyList');
     const mapContainer = document.querySelector('#map');
+    const clearOfflineBtn = document.querySelector('#clearOfflineBtn');
 
     const renderStories = (stories) => {
       if (!stories || stories.length === 0) {
@@ -41,25 +47,10 @@ export default class HomePage {
             <time datetime="${story.createdAt}" class="story-date">
               ${new Date(story.createdAt).toLocaleString()}
             </time>
-            <button class="save-story-btn" data-id="${story.id}" aria-label="Tambahkan cerita ${story.name} ke favorit">
-              💾 Tambahkan ke Favorit
-            </button>
           </article>
         `;
       }).join('');
       storyContainer.innerHTML = storyHtml;
-
-      // Tambahkan event listener ke tombol simpan favorit
-      document.querySelectorAll('.save-story-btn').forEach((button) => {
-        button.addEventListener('click', async (e) => {
-          const id = e.target.dataset.id;
-          const story = stories.find((s) => s.id === id);
-          if (story) {
-            await IdbHelper.putStory(story);
-            alert('Story berhasil disimpan ke Favorit!');
-          }
-        });
-      });
     };
 
     const renderMap = (stories) => {
@@ -92,5 +83,22 @@ export default class HomePage {
       renderStories(offlineStories);
       renderMap(offlineStories);
     }
+
+    clearOfflineBtn.addEventListener('click', async () => {
+      const offlineStories = await IdbHelper.getAllStories();
+      if (offlineStories.length === 0) {
+        alert('Tidak ada data offline untuk dihapus.');
+        return;
+      }
+
+      const confirmDelete = confirm('Apakah Anda yakin ingin menghapus semua data offline?');
+      if (confirmDelete) {
+        for (const story of offlineStories) {
+          await IdbHelper.deleteStory(story.id);
+        }
+        alert('Semua data offline berhasil dihapus.');
+        storyContainer.innerHTML = '<p>Semua data offline telah dihapus.</p>';
+      }
+    });
   }
 }
