@@ -15,9 +15,6 @@ export default class HomePage {
     return `
       <main id="main-content" class="home-container" tabindex="-1" role="main">
         <header class="page-header">
-          <button id="savePageBtn" class="save-page-btn" aria-label="Simpan Halaman">
-            💾 Save Page
-          </button>
           <h1 class="page-title">Berbagi Cerita</h1>
           <!-- Kalau ada button subs bisa tetap di sini -->
         </header>
@@ -30,7 +27,6 @@ export default class HomePage {
   async afterRender() {
     const storyContainer = document.querySelector('#storyList');
     const mapContainer = document.querySelector('#map');
-    const savePageBtn = document.querySelector('#savePageBtn');
 
     const renderStories = (stories) => {
       if (!stories || stories.length === 0) {
@@ -93,11 +89,6 @@ export default class HomePage {
       const stories = result.listStory;
       renderStories(stories);
       renderMap(stories);
-
-      // Save Page button action contoh sederhana
-      savePageBtn.addEventListener('click', () => {
-        alert('Fungsi Save Page belum diimplementasikan');
-      });
 
     } catch (error) {
       const offlineStories = await IdbHelper.getAllStories();
